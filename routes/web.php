@@ -1,22 +1,47 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes(['verify' => true]);
+Route::get('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
 });
 
-Auth::routes();
+Route::get('/reset', function () {
+    Artisan::call('config:cache');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    return redirect('/');
+});
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::redirect('/', 'drivers');
+
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    // Driver
+    Route::group(['prefix' => 'drivers', 'namespace' => 'Drivers', 'as' => 'drivers.'], function () {
+        Route::get('/', 'PagesController@index')->name('dashboard');
+    });
+
+    // Dispatches
+    Route::group(['prefix' => 'dispatch', 'namepsace' => '', 'as' => 'dispatch.'], function () {
+        Route::get('/', 'DispatchController@index')->name('index');
+        Route::get('/start', 'DispatchController@create')->name('start');
+
+        // Actions
+        Route::post('/', 'DispatchController@store')->name('store');
+        Route::post('/warehouse/search', 'WarehouseController@search')->name('warehouse.search');
+
+        // URI
+        Route::put('/update/{reference_number}', 'DispatchController@update')->name('update');
+        Route::get('/{reference_number}', 'DispatchController@show')->name('show');
+    });
+
+    // Admin
+    Route::group([], function () {
+        //
+    });
+
+});
