@@ -1,6 +1,6 @@
 <header id="header" class="flex justify-between w-full bg-gray-900">
     {{-- Mobile Menu Icon --}}
-    <button id="mobile-menu-button" class="p-4 rounded-md md:hidden focus:outline-none text-gray-700" aria-label="Menu">
+    <button id="mobile-menu-button" class="p-4 rounded-md md:hidden focus:outline-none text-gray-600" aria-label="Menu">
         <i class="fas fa-bars fa-fw"></i>
     </button>
 

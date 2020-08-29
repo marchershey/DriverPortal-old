@@ -15,9 +15,15 @@ class CreateDispatchStopsTable extends Migration
     {
         Schema::create('dispatch_stops', function (Blueprint $table) {
             $table->id();
-            $table->integer('dispatch_id');
-            $table->integer('warehouse_id');
-            $table->integer('type')->nullable();
+            $table->integer('dispatch_id')->nullable();
+            $table->integer('warehouse_id')->nullable();
+            $table->integer('position')->nullable();
+            $table->integer('type_id')->nullable();
+            $table->integer('miles')->nullable();
+            $table->integer('drop_hooks')->nullable();
+            $table->integer('tray_count')->nullable();
+            $table->integer('roll_offs')->nullable();
+            $table->integer('pack_outs')->nullable();
             $table->timestamps();
         });
     }

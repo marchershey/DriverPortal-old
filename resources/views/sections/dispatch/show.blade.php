@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="container px-6 mx-auto">
-    <form class="w-full md:max-w-xl" action="{{ route('dispatch.update', $dispatch->reference_number) }}" method="POST" autocomplete="off">
+    <form id="dispatch-show" class="w-full md:max-w-xl" action="{{ route('dispatch.update', $dispatch->reference_number) }}" method="POST" autocomplete="off">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="_method" value="PUT">
@@ -58,30 +58,29 @@
 
         </div>
         @if($dispatch->stop_count > 1)
-        <div class="flex items-center justify-center bg-blue-500 text-white text-sm font-bold px-4 py-3" role="alert">
+        <div class="flex items-center justify-center bg-blue-500 text-white text-sm font-bold px-4 py-3 mb-6" role="alert">
             <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M12.432 0c1.34 0 2.01.912 2.01 1.957 0 1.305-1.164 2.512-2.679 2.512-1.269 0-2.009-.75-1.974-1.99C9.789 1.436 10.67 0 12.432 0zM8.309 20c-1.058 0-1.833-.652-1.093-3.524l1.214-5.092c.211-.814.246-1.141 0-1.141-.317 0-1.689.562-2.502 1.117l-.528-.88c2.572-2.186 5.531-3.467 6.801-3.467 1.057 0 1.233 1.273.705 3.23l-1.391 5.352c-.246.945-.141 1.271.106 1.271.317 0 1.357-.392 2.379-1.207l.6.814C12.098 19.02 9.365 20 8.309 20z" /></svg>
-            <p>Since you have {{$dispatch->stop_count}} stops, the system has automatically added {{$dispatch->stop_count - 1}} stop pays.</p>
+            <p>Since you have {{$dispatch->stop_count}} stops, the system has automatically added {{$dispatch->stop_count - 1}} Stop Pay(s).</p>
         </div>
         @endif
 
-        <div class="flex flex-wrap w-full bg-white mb-6 p-4 pb-0 rounded">
-            @for ($i = 0; $i < $dispatch->stop_count; $i++)
-                <div class="w-full">
-                    <div class="w-full px-3 mb-6">
-                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                            Stop #{{$i + 1}}
-                        </label>
-                        <div class="relative">
-                            <input type="hidden" name="stops[{{$i}}][warehouse_id]" class="stop" value="{{$dispatch->stops[$i]->id ?? ''}}">
-                            <input type="hidden" name="stops[{{$i}}][blah]" class="stop-data" value="{{$dispatch->stops[$i]->blah ?? 'asdf'}}">
-                            <input class="stop-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('stops.' . $i) border-red-600 @enderror" type="text" placeholder="Start typing city name..." value="{{$dispatch->stops[$i]->name ?? ''}}" autocomplete="off">
-                            <div class="stop-loading pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700" style="display: none">
-                                <i class="fas fa-spinner fa-spin"></i>
-                            </div>
+        @for ($i = 0; $i < $dispatch->stop_count; $i++)
+            <div class="flex flex-wrap w-full bg-white mb-6 p-4 pb-0 rounded">
+                <div class="w-full md:w-1/2 px-3 mb-6">
+
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                        Stop #{{$i + 1}}
+                    </label>
+                    <div class="relative">
+                        <input type="hidden" name="stops[{{$i}}][warehouse_id]" class="stop" value="{{$dispatch->stops[$i]->pivot->warehouse_id ?? ''}}">
+                        <input type="hidden" name="stops[{{$i}}][position]" class="position" value="{{$i}}">
+                        <input class="stop-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('stops.' . $i) border-red-600 @enderror" type="text" placeholder="Start typing city name..." value="{{$dispatch->stops[$i]->name ?? ''}}" autocomplete="off">
+                        <div class="stop-loading pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700" style="display: none">
+                            <i class="fas fa-spinner fa-spin"></i>
                         </div>
-                        <div class="stop-results-container bg-white mt-2">
-                            <div class="stop-no-results flex justify-center p-5" style="display: none">
+                        <div class="absolute stop-results-container bg-white mt-2 w-full shadow z-10" style="display: none">
+                            <div class="stop-no-results flex justify-center p-5 w-full" style="display: none">
                                 <div class="text-center">
                                     <div class="mb-3">
                                         No warehouses with that name found.
@@ -93,13 +92,130 @@
                             </div>
                             <div class="stop-item-list border-t" style="display: none"></div>
                         </div>
-                        <div class="">
+                    </div>
+                </div>
 
+                <div class="w-full md:w-1/2 px-3 mb-6">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                        Type of Stop
+                    </label>
+                    <div class="relative">
+                        <select name="stops[{{$i}}][type_id]" class="stop-type-selection block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option value=""></option>
+                            @foreach($stopTypes as $key=>$type)
+                            <option value="{{$type->id}}" {{ ($dispatch->stops[$i]->pivot->type_id ?? '') == $type->id ? 'selected' : ''}}>{{$type->name}}</option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                         </div>
                     </div>
                 </div>
-                @endfor
+
+                <div class="stop-data-group flex flex-wrap w-full">
+
+                    <div class="stop-data miles w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Estimated Miles
+                        </label>
+                        <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->miles ?? ''}}" disabled>
+                    </div>
+
+                    <div class="stop-data drophook w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Drop & Hooks
+                        </label>
+                        <input name="stops[{{$i}}][drop_hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->drop_hooks ?? ''}}" disabled>
+                    </div>
+
+                    <div class="stop-data tray w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                        <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Tray Count
+                        </label>
+                        <input name="stops[{{$i}}][tray_count]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->tray_count ?? ''}}" disabled>
+                    </div>
+
+                    <div class="stop-data rolloff w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                        <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Roll-Off Count
+                        </label>
+                        <input name="stops[{{$i}}][roll_offs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->roll_offs ?? ''}}" disabled>
+                    </div>
+
+                    <div class="stop-data packout w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                        <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Pack-Out Count
+                        </label>
+                        <input name="stops[{{$i}}][pack_outs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->pack_outs ?? ''}}" disabled>
+                    </div>
+
+                    <div class="stop-data different w-full px-3 mb-6" style="display: none">
+                        <label class="different-div w-full">
+                            <input type="checkbox" class="different-checkbox form-checkbox shadow text-blue-500" name="different" {{ old('remember') ? 'checked' : '' }}>
+                            <span class="ml-2 text-sm text-gray-600 mb-px">Roll-off & Pack-out count are different.</span>
+                        </label>
+                    </div>
+
+                    {{-- ////// --}}
+
+                    {{-- <div class="stop-data-1 w-full" style="display: none">
+                        <div class="flex flex-wrap">
+                            <div class="miles-div w-1/2 md:w-1/3 px-3 mb-6">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    Estimated Miles
+                                </label>
+                                <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
+                </div>
+                <div class="drop-div w-1/2 md:w-1/3 px-3 mb-6">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                        Drop & Hooks
+                    </label>
+                    <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
+                </div>
+
+            </div>
+</div>
+
+<div class="stop-data-2 w-full" style="display: none">
+    <div class="flex flex-wrap">
+        <div class="miles-div w-1/2 md:w-1/3 px-3 mb-6">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                Estimated Miles
+            </label>
+            <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
         </div>
-    </form>
+        <div class="drop-div w-1/2 md:w-1/3 px-3 mb-6">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                Drop & Hooks
+            </label>
+            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
+        </div>
+        <div class="tray-count-div w-1/2 md:w-1/3 px-3 mb-6">
+            <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                Tray Count
+            </label>
+            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
+        </div>
+        <div class="pack-out-div w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+            <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                Pack-Out Count
+            </label>
+            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
+        </div>
+        <label class="different-div inline-flex justify-center items-center w-full md:w-1/2 px-3 mb-6 pt-6" for="remember">
+            <input type="checkbox" class="different form-checkbox shadow text-blue-500" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+            <span class="ml-2 text-xs text-gray-600 mb-px">Roll-off & Pack-out count are different.</span>
+        </label>
+    </div>
+</div>
+
+
+<div class="stop-type stop-type-3 w-full px-3 mb-6" style="display: none">You have selected <strong>blue option</strong> so i am here</div> --}}
+</div>
+
+</div>
+@endfor
+</form>
 </div>
 @endsection

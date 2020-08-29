@@ -2,9 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDispatchStatusesTable extends Migration
+class CreateDispatchStopTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +14,18 @@ class CreateDispatchStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dispatch_statuses', function (Blueprint $table) {
+        Schema::create('dispatch_stop_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('color');
-            $table->integer('driver_default')->default(0);
-            $table->integer('driver_hidden')->default(0);
+            $table->integer('active')->default(1);
             $table->timestamps();
         });
+
+        DB::table('dispatch_stop_types')->insert([
+            ['name' => 'Drop & Hook'],
+            ['name' => 'Roll Off'],
+            ['name' => 'Pack Out'],
+        ]);
     }
 
     /**
@@ -30,6 +35,6 @@ class CreateDispatchStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dispatch_statuses');
+        Schema::dropIfExists('dispatch_stop_types');
     }
 }

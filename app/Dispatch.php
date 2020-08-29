@@ -23,14 +23,16 @@ class Dispatch extends Model
 
     public function status()
     {
-        return $this->hasOne('App\DispatchStatus');
+        return $this->belongsTo('App\DispatchStatus');
     }
 
-    /**
-     * Get the locations that belong to this dispatch
-     */
     public function stops()
     {
-        return $this->belongsToMany('App\Warehouse', 'dispatch_stops');
+        return $this->belongsToMany('App\Warehouse', 'dispatch_stops')->withPivot('position', 'type_id', 'miles', 'drop_hooks', 'tray_count', 'pack_outs', 'roll_offs')->withTimestamps()->orderBy('position');
+    }
+
+    public function stop_types()
+    {
+        return $this->hasOne('App\DispatchStopType');
     }
 }

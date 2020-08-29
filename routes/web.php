@@ -17,9 +17,14 @@ Route::get('/reset', function () {
     return redirect('/');
 });
 
-Route::redirect('/', 'drivers');
+Route::redirect('/', 'drivers')->name('index');
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
+    // User
+    Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.'], function () {
+        Route::get('/rates', 'PagesController@billing')->name('rates');
+    });
+
     // Driver
     Route::group(['prefix' => 'drivers', 'namespace' => 'Drivers', 'as' => 'drivers.'], function () {
         Route::get('/', 'PagesController@index')->name('dashboard');
