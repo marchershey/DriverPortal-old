@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('auth')
-<div id="register" class="my-5">
+<div id="register" class="py-5 min-h-full">
     <section class="h-full flex items-center justify-center">
-        <div class="w-full max-w-xs">
+        <div class="w-full">
             <div class="text-center text-white text-5xl font-extrabold mb-4">
                 <a href="/">{{config('app.name')}}</a>
             </div>
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="POST" action="{{ route('register') }}">
+            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full" method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="mb-4 text-center">
                     <p class="text-xl text-gray-700 font-extrabold">Create a new account</p>

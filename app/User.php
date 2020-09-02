@@ -44,4 +44,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Dispatch');
     }
+
+    public function rates()
+    {
+        return $this->hasOne('App\UserRate');
+    }
+
+    public function settings()
+    {
+        return $this->hasOne('App\UserSettings');
+    }
 }

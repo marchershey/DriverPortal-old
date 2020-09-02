@@ -12,7 +12,7 @@
             </h2>
         </div>
         <div>
-            <a href="{{ route('dispatch.start') }}" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('drivers.dispatch.start') }}" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Start Dispatch
             </a>
         </div>
@@ -80,42 +80,44 @@
                 <thead>
                     <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-100">
                         <th class="px-4 py-3" colspan="2">Recent Dispatches</th>
-                        <th class="px-4 py-3">Date</th>
-                        <th class="px-4 py-3">Gross</th>
+                        <th class="px-4 py-3 text-center">Date</th>
+                        <th class="px-4 py-3 text-center">Gross</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y">
-                    @if(count(Auth::user()->dispatches()->get()) > 0)
-                    @foreach(Auth::user()->dispatches()->get()->sortByDesc('id') as $dispatch)
+                    @if(count($dispatches) > 0)
+                    @foreach($dispatches as $dispatch)
 
-                    <tr class="text-gray-700 cursor-pointer hover:bg-gray-100" onclick="window.location='/dispatch/{{$dispatch->reference_number}}';">
+                    <tr class="text-gray-700 cursor-pointer hover:bg-gray-100" onclick="window.location='/driver/dispatch/{{$dispatch->reference_number}}';">
                         <td class="px-4 py-3 pr-0 text-xs">
                             <span class="px-2 py-1 font-semibold leading-tight text-{{$dispatch->status->color}}-700 bg-{{$dispatch->status->color}}-200 rounded-full w-">
                                 {{$dispatch->status->name}}
                             </span>
                         </td>
-                        <td class="w-2/3 px-4 py-3">
-                            <div class="flex items-center">
-                                <a href="/dispatch/{{$dispatch->reference_number}}">
-                                    <ul class="flex font-semibold text-sm">
-                                        @foreach($dispatch->stops as $key => $stop)
-                                        @if ($key === array_key_first($dispatch->stops->toArray()))
-                                        <li>{{$stop->name}}</li>
-                                        @else
-                                        <li class="pl-1">& {{$stop->name}}</li>
-                                        @endif
-                                        @endforeach
-                                    </ul>
-                                    <p class="text-xs text-gray-600">
-                                        Reference #{{$dispatch->reference_number}}
-                                    </p>
-                                </a>
-                            </div>
+                        <td class="px-4 py-3">
+                            <ul class="flex font-semibold text-sm w-16 truncate">
+                                @foreach($dispatch->stops as $key => $stop)
+                                @if ($key === array_key_first($dispatch->stops->toArray()))
+                                <li>{{$stop->name}}</li>
+                                @else
+                                <li class="pl-1">& {{$stop->name}}</li>
+                                @endif
+                                @endforeach
+                            </ul>
+                            <p class="text-xs text-gray-600">
+                                Reference #{{$dispatch->reference_number}}
+                            </p>
                         </td>
-                        <td class="px-4 py-3 text-xs format-date">
-                            {{$dispatch->starting_date}}
+                        <td class="px-4 py-3 text-xs text-center">
+                            @if(Auth::user()->settings->date_verbiage)
+                            <span class="format-date">
+                                {{$dispatch->starting_date}}
+                            </span>
+                            @else
+                            {{date('m-d-Y', strtotime($dispatch->starting_date))}}
+                            @endif
                         </td>
-                        <td class="px-4 py-3 text-xs font-mono">
+                        <td class="px-4 py-3 text-xs font-mono text-center">
                             $863.45
                         </td>
                     </tr>
@@ -130,11 +132,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-100 sm:grid-cols-9">
-            <span class="flex items-center col-span-3">
-                Showing 21-30 of 100
-            </span>
-            <span class="col-span-2"></span>
+        <div class="px-4 border-t bg-gray-100">
+            {{$dispatches->onEachSide(1)->links('layouts.pagination')}}
         </div>
     </div>
 

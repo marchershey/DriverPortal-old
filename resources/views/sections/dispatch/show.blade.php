@@ -5,10 +5,9 @@
 
 @section('content')
 <div class="container px-6 mx-auto">
-    <form id="dispatch-show" class="w-full md:max-w-xl" action="{{ route('dispatch.update', $dispatch->reference_number) }}" method="POST" autocomplete="off">
+    <form id="dispatch-show" class="w-full md:max-w-xl mx-auto" action="{{ route('drivers.dispatch.show.post', $dispatch->reference_number) }}" method="POST" autocomplete="off">
+        @method('PUT')
         @csrf
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="_method" value="PUT">
         <div class="flex justify-between items-center bg-gray-200 my-6">
             <h2 class="text-2xl font-semibold text-gray-700">
                 Dispatch #{{$dispatch->reference_number}}
@@ -16,6 +15,7 @@
             <button type="submit" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Update
             </button>
+
         </div>
 
         @include('layouts.alerts')
@@ -79,16 +79,19 @@
                         <div class="stop-loading pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700" style="display: none">
                             <i class="fas fa-spinner fa-spin"></i>
                         </div>
-                        <div class="absolute stop-results-container bg-white mt-2 w-full shadow z-10" style="display: none">
-                            <div class="stop-no-results flex justify-center p-5 w-full" style="display: none">
-                                <div class="text-center">
+                        <div class="absolute stop-results-container -mt-1 bg-white w-full z-10 border border-gray-500" style="display: none">
+                            <div class="stop-no-results block p-2 border-b hover:bg-gray-100 cursor-pointer" style="display: none">
+                                <h1 class="text-sm font-semibold">
+                                    No results found.
+                                </h1>
+                                {{-- <div class="text-center">
                                     <div class="mb-3">
                                         No warehouses with that name found.
                                     </div>
                                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
                                         Create one
                                     </button>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="stop-item-list border-t" style="display: none"></div>
                         </div>
@@ -115,44 +118,69 @@
 
                 <div class="stop-data-group flex flex-wrap w-full">
 
-                    <div class="stop-data miles w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
+                    <div class="stop-data miles w-1/2 md:w-1/3 px-3 mb-6 flex flex-wrap" style="display: none">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Estimated Miles
                         </label>
-                        <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->miles ?? ''}}" disabled>
+                        <div class="relative group">
+                            <input name="stops[{{$i}}][miles]" class="appearance-none inline w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->miles ?? '0'}}" disabled>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                $0.00
+                            </div>
+                        </div>
                     </div>
 
                     <div class="stop-data drophook w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Drop & Hooks
                         </label>
-                        <input name="stops[{{$i}}][drop_hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->drop_hooks ?? ''}}" disabled>
+                        <div class="relative">
+                            <input name="stops[{{$i}}][drop_hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->drop_hooks ?? '0'}}" disabled>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                $0.00
+                            </div>
+                        </div>
                     </div>
 
                     <div class="stop-data tray w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
                         <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Tray Count
                         </label>
-                        <input name="stops[{{$i}}][tray_count]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->tray_count ?? ''}}" disabled>
+                        <div class="relative">
+                            <input name="stops[{{$i}}][tray_count]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->tray_count ?? '0'}}" disabled>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                $0.00
+                            </div>
+                        </div>
                     </div>
 
                     <div class="stop-data rolloff w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
                         <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Roll-Off Count
                         </label>
-                        <input name="stops[{{$i}}][roll_offs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->roll_offs ?? ''}}" disabled>
+                        <div class="relative">
+                            <input name="stops[{{$i}}][roll_offs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->roll_offs ?? '0'}}" disabled>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                $0.00
+                            </div>
+                        </div>
                     </div>
 
                     <div class="stop-data packout w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
                         <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Pack-Out Count
                         </label>
-                        <input name="stops[{{$i}}][pack_outs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->pack_outs ?? ''}}" disabled>
+                        <div class="relative">
+                            <input name="stops[{{$i}}][pack_outs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->pack_outs ?? '0'}}" disabled>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                $0.00
+                            </div>
+                        </div>
                     </div>
 
                     <div class="stop-data different w-full px-3 mb-6" style="display: none">
                         <label class="different-div w-full">
-                            <input type="checkbox" class="different-checkbox form-checkbox shadow text-blue-500" name="different" {{ old('remember') ? 'checked' : '' }}>
+                            <input type="checkbox" class="different-checkbox form-checkbox shadow text-blue-500" name="stops[{{$i}}][different]" {{ (($dispatch->stops[$i]->pivot->different ?? '') == 'on') ? 'checked' : '' }}>
                             <span class="ml-2 text-sm text-gray-600 mb-px">Roll-off & Pack-out count are different.</span>
                         </label>
                     </div>

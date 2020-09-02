@@ -63,7 +63,7 @@ function getStops(string, $resultsContainer, $loadingIcon) {
     })
     $.ajax({
         type: 'POST',
-        url: './warehouse/search',
+        url: './warehouse',
         data: {
             string: string,
         },
@@ -73,14 +73,15 @@ function getStops(string, $resultsContainer, $loadingIcon) {
                 stopSearchNoResults($resultsContainer)
             } else {
                 $.each(results, function(key, result) {
-                    $('<a class="stop-item block border-b p-2 hover:bg-gray-100 cursor-pointer" data-id="' + result.id + '" data-name="' + result.name + '"><h1 class="text-sm font-semibold">' + result.name + '</h1><p class="stop-item-address text-xs uppercase truncate">' + result.address + ' ' + result.city + ' ' + result.state + ' ' + result.zip + '</p></a>').appendTo($resultsContainer.find('.stop-item-list'))
+                    // $('<a class="stop-item block border-b p-2 hover:bg-gray-100 cursor-pointer" data-id="' + result.id + '" data-name="' + result.name + '"><h1 class="text-sm font-semibold">' + result.name + '</h1><p class="stop-item-address text-xs uppercase truncate">' + result.address + ' ' + result.city + ' ' + result.state + ' ' + result.zip + '</p></a>').appendTo($resultsContainer.find('.stop-item-list'))
+                    $('<a class="stop-item block border-b p-2 hover:bg-gray-100 cursor-pointer" data-id="' + result.id + '" data-name="' + result.name + '"><h1 class="text-sm font-semibold">' + result.name + '</h1></a>').appendTo($resultsContainer.find('.stop-item-list'))
                 })
 
-                $resultsContainer.slideDown()
                 $resultsContainer.find('.stop-item-list').slideDown()
             }
         },
         complete: function() {
+            $resultsContainer.slideDown()
             stopSearchDone($loadingIcon)
         },
     })
@@ -128,54 +129,66 @@ $('.stop-type-selection')
                     case 'Drop & Hook':
                         $stopDataMiles
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataDropHook
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
 
                         $stopDataTrayCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataRollOffCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataPackOutCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataDifferent
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         break
                     case 'Roll Off':
                         $stopDataMiles
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataDropHook
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataTrayCount
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
 
                         $stopDataRollOffCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataPackOutCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataDifferent
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
 
@@ -183,18 +196,22 @@ $('.stop-type-selection')
                     case 'Pack Out':
                         $stopDataMiles
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataDropHook
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataTrayCount
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
                         $stopDataDifferent
                             .slideDown()
+                            .children()
                             .children('input')
                             .removeAttr('disabled')
 
@@ -204,26 +221,32 @@ $('.stop-type-selection')
                     case '':
                         $stopDataMiles
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataDropHook
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataTrayCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataRollOffCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataPackOutCount
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         $stopDataDifferent
                             .slideUp()
+                            .children()
                             .children('input')
                             .attr('disabled', 'disabled')
                         break
@@ -234,40 +257,55 @@ $('.stop-type-selection')
     })
     .change()
 
-$('.different-checkbox').click(function() {
-    var $stopDataGroup = $(this)
-        .parent()
-        .parent()
-        .parent()
-    var $stopDataTrayCount = $stopDataGroup.find('.tray')
-    var $stopDataRollOffCount = $stopDataGroup.find('.rolloff')
-    var $stopDataPackOutCount = $stopDataGroup.find('.packout')
+$('.different-checkbox')
+    .change(function() {
+        var $stopDataGroup = $(this)
+            .parent()
+            .parent()
+            .parent()
+        var $stopDataTrayCount = $stopDataGroup.find('.tray')
+        var $stopDataRollOffCount = $stopDataGroup.find('.rolloff')
+        var $stopDataPackOutCount = $stopDataGroup.find('.packout')
 
-    if ($(this).is(':checked')) {
-        $stopDataTrayCount
-            .hide()
-            .children('input')
-            .attr('disabled', 'disabled')
-        $stopDataRollOffCount
-            .show()
-            .children('input')
-            .removeAttr('disabled')
-        $stopDataPackOutCount
-            .show()
-            .children('input')
-            .removeAttr('disabled')
-    } else if ($(this).is(':not(:checked)')) {
-        $stopDataTrayCount
-            .show()
-            .children('input')
-            .removeAttr('disabled')
-        $stopDataRollOffCount
-            .hide()
-            .children('input')
-            .attr('disabled', 'disabled')
-        $stopDataPackOutCount
-            .hide()
-            .children('input')
-            .attr('disabled', 'disabled')
-    }
-})
+        if (
+            $stopDataGroup
+                .parent()
+                .find('.stop-type-selection')
+                .val() == '3'
+        ) {
+            if ($(this).is(':checked')) {
+                $stopDataTrayCount
+                    .hide()
+                    .children()
+                    .children('input')
+                    .attr('disabled', 'disabled')
+                $stopDataRollOffCount
+                    .slideDown()
+                    .children()
+                    .children('input')
+                    .removeAttr('disabled')
+                $stopDataPackOutCount
+                    .slideDown()
+                    .children()
+                    .children('input')
+                    .removeAttr('disabled')
+            } else if ($(this).is(':not(:checked)')) {
+                $stopDataTrayCount
+                    .slideDown()
+                    .children()
+                    .children('input')
+                    .removeAttr('disabled')
+                $stopDataRollOffCount
+                    .hide()
+                    .children()
+                    .children('input')
+                    .attr('disabled', 'disabled')
+                $stopDataPackOutCount
+                    .hide()
+                    .children()
+                    .children('input')
+                    .attr('disabled', 'disabled')
+            }
+        }
+    })
+    .change()

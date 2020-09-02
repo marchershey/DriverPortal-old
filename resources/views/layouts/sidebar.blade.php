@@ -1,13 +1,13 @@
 <aside id="sidebar" class="hidden absolute md:relative md:block w-64 h-screen-nav overflow-y-hidden flex-shrink-0 bg-gray-900">
     <div id="logo" class="p-4 mt-px align-middle hidden">
         <a href="{{route('index')}}" class="text-xl font-bold text-gray-400">
-            {{config('app.name')}}
+            {{config('app.name')}} <sup>BETA</sup>
         </a>
     </div>
     <div id="nav-links" class="text-sm">
         <ul class="w-64">
             <li>
-                <a href="{{route('index')}}" class="block px-4 py-2 text-gray-600 hover:text-gray-300 transition duration-500">
+                <a href="{{route('drivers.dashboard.index')}}" class="block px-4 py-2 text-gray-600 hover:text-gray-300 transition duration-500">
                     <i class="fas fa-tachometer-alt fa-fw"></i>
                     <span class="ml-4 font-semibold">
                         Dashboard
@@ -45,10 +45,10 @@
                 </div>
             </li> --}}
             <li>
-                <a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-300 transition duration-500">
+                <a href="{{route('drivers.rates.index')}}" class="block px-4 py-2 text-gray-600 hover:text-gray-300 transition duration-500">
                     <i class="fas fa-dollar-sign fa-fw"></i>
                     <span class="ml-4 font-semibold">
-                        Prices
+                        Pay Rates
                     </span>
                 </a>
             </li>

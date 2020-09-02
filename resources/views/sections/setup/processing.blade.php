@@ -32,3 +32,9 @@
     </section>
 </div>
 @endsection
+
+@push('js')
+<script>
+    setTimeout(function(){ location.replace("{{route('index')}}"); }, 2000);
+</script>
+@endpush

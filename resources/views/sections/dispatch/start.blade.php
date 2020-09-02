@@ -4,8 +4,8 @@
 @section('sidebar', true)
 
 @section('content')
-<div class="container px-6 mx-auto">
-    <form class="w-full md:max-w-xl" action="{{ route('dispatch.store') }}" method="POST">
+<div class="container px-6">
+    <form class="w-full md:max-w-xl mx-auto" action="{{ route('drivers.dispatch.start.post') }}" method="POST">
         @csrf
         <div class="flex justify-between items-center bg-gray-200 my-6">
             <h2 class="text-2xl font-semibold text-gray-700 ">
@@ -14,6 +14,7 @@
             <button type="submit" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Start
             </button>
+
         </div>
 
         @include('layouts.alerts')

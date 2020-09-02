@@ -13,3 +13,7 @@
     height: calc(100vh - 64px);
     height: calc(calc(var(--vh, 1vh) * 100) - 64px);
 }
+
+.toggle-checkbox:checked + .toggle-label {
+    background-color: #4299e1;
+}

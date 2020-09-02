@@ -139,6 +139,10 @@ class DispatchController extends Controller
                 $data['stops'][$key]['roll_offs'] = $stop['tray_count'];
                 $data['stops'][$key]['pack_outs'] = $stop['tray_count'];
             }
+
+            if (!isset($stop['different'])) {
+                $data['stops'][$key]['different'] = 'off';
+            }
         }
 
         $stops = collect($data['stops'])->whereNotNull('warehouse_id')->keyBy('warehouse_id')->transform(function ($key) {

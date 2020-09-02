@@ -24,6 +24,7 @@ class CreateDispatchStopsTable extends Migration
             $table->integer('tray_count')->nullable();
             $table->integer('roll_offs')->nullable();
             $table->integer('pack_outs')->nullable();
+            $table->string('different')->nullable();
             $table->timestamps();
         });
     }
