@@ -124,4 +124,33 @@ class DispatchController extends Controller
         return $locations;
     }
 
+    public function calc_rate(Request $request)
+    {
+        $rates = Auth::user()->rates()->first();
+
+        $data = $request->validate([
+            'value' => 'required|numeric',
+            'stop_type' => 'required',
+            'data_type' => 'required',
+        ]);
+
+        if ($data['data_type'] == 'miles') {
+            $amount = $data['value'] * $rates->mileage;
+        } else if ($data['data_type'] == 'drops') {
+            $amount = $data['value'] * $rates->mileage;
+        } else if ($data['data_type'] == 'tray') {
+            if ($data['stop_type'] == 'rolloff') {
+                $amount = $data['value'] * $rates->roll_off;
+            } else if ($data['stop_type'] == 'packout') {
+                $amount = (($data['value'] * $rates->roll_off) + ($data['value'] * $rates->pack_out));
+            }
+        } else if ($data['data_type'] == 'rolloff') {
+            $amount = $data['value'] * $rates->roll_off;
+        } else if ($data['data_type'] == 'packout') {
+            $amount = $data['value'] * $rates->pack_out;
+        }
+
+        return round($amount, 2, PHP_ROUND_HALF_UP);
+    }
+
 }

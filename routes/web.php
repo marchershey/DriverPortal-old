@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
                 Route::get('/{reference_number}', 'DispatchController@show')->name('show');
 
                 Route::post('/warehouse', 'DispatchController@warehouse_search')->name('warehouse.search');
+                Route::post('/rate', 'DispatchController@calc_rate')->name('calc.rate');
             });
         });
     });

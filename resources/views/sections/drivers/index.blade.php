@@ -95,10 +95,10 @@
                             </span>
                         </td>
                         <td class="px-4 py-3">
-                            <ul class="flex font-semibold text-sm w-16 truncate">
+                            <ul class="flex font-semibold text-sm">
                                 @foreach($dispatch->stops as $key => $stop)
                                 @if ($key === array_key_first($dispatch->stops->toArray()))
-                                <li>{{$stop->name}}</li>
+                                <li class="">{{$stop->name}}</li>
                                 @else
                                 <li class="pl-1">& {{$stop->name}}</li>
                                 @endif

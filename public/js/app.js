@@ -54539,9 +54539,11 @@ $('.stop-type-selection').change(function () {
     var $stopDataRollOffCount = $stopDataGroup.find('.rolloff');
     var $stopDataPackOutCount = $stopDataGroup.find('.packout');
     var $stopDataDifferent = $stopDataGroup.find('.different');
+    var $stopDataType = $stopDataGroup.find('.stop-type');
 
     switch (stopDataType) {
       case 'Drop & Hook':
+        $stopDataType.val('drop');
         $stopDataMiles.slideDown().children().children('input').removeAttr('disabled');
         $stopDataDropHook.slideDown().children().children('input').removeAttr('disabled');
         $stopDataTrayCount.slideUp().children().children('input').attr('disabled', 'disabled');
@@ -54551,6 +54553,7 @@ $('.stop-type-selection').change(function () {
         break;
 
       case 'Roll Off':
+        $stopDataType.val('rolloff');
         $stopDataMiles.slideDown().children().children('input').removeAttr('disabled');
         $stopDataDropHook.slideDown().children().children('input').removeAttr('disabled');
         $stopDataTrayCount.slideDown().children().children('input').removeAttr('disabled');
@@ -54560,6 +54563,7 @@ $('.stop-type-selection').change(function () {
         break;
 
       case 'Pack Out':
+        $stopDataType.val('packout');
         $stopDataMiles.slideDown().children().children('input').removeAttr('disabled');
         $stopDataDropHook.slideDown().children().children('input').removeAttr('disabled');
         $stopDataTrayCount.slideDown().children().children('input').removeAttr('disabled');
@@ -54569,6 +54573,7 @@ $('.stop-type-selection').change(function () {
         break;
 
       case '':
+        $stopDataType.val('');
         $stopDataMiles.slideUp().children().children('input').attr('disabled', 'disabled');
         $stopDataDropHook.slideUp().children().children('input').attr('disabled', 'disabled');
         $stopDataTrayCount.slideUp().children().children('input').attr('disabled', 'disabled');
@@ -54580,6 +54585,58 @@ $('.stop-type-selection').change(function () {
 
   });
 }).change();
+
+function calcRate($input, value, data_type, stop_type) {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    type: 'POST',
+    url: './rate',
+    data: {
+      value: value,
+      data_type: data_type,
+      stop_type: stop_type
+    },
+    success: function success(results) {
+      $input.text('$' + results);
+    },
+    complete: function complete() {//
+    }
+  });
+}
+
+$('.stop-data-input').on('keypress', function (e) {
+  var verified = e.which == 8 || e.which == undefined || e.which == 0 ? null : String.fromCharCode(e.which).match(/[^0-9]/);
+
+  if (verified) {
+    e.preventDefault();
+  }
+}).on('focus', function () {
+  $(this).val('');
+}).on('blur', function () {
+  if ($(this).val() == '') {
+    $(this).val('0');
+    $(this).next('.stop-data-rate').text('$0.00');
+  }
+}).on('input', function () {
+  var _this = this;
+
+  if ($(this).val() != '') {
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      calcRate($(_this).next('.stop-data-rate'), $(_this).val(), $(_this).siblings('.stop-data-type').val(), $(_this).parent().parent().siblings('.stop-type').val());
+    }, 500);
+  } else {
+    $(this).next('.stop-data-rate').text('$0.00');
+  }
+}).each(function (value, input) {
+  if ($(input).val() != 0) {
+    calcRate($(input).next('.stop-data-rate'), $(input).val(), $(input).siblings('.stop-data-type').val(), $(input).parent().parent().siblings('.stop-type').val());
+  }
+});
 $('.different-checkbox').change(function () {
   var $stopDataGroup = $(this).parent().parent().parent();
   var $stopDataTrayCount = $stopDataGroup.find('.tray');

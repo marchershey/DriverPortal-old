@@ -98,7 +98,7 @@
                     </div>
                 </div>
 
-                <div class="w-full md:w-1/2 px-3 mb-6">
+                <div class="stop-type w-full md:w-1/2 px-3 mb-6">
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
                         Type of Stop
                     </label>
@@ -117,16 +117,18 @@
                 </div>
 
                 <div class="stop-data-group flex flex-wrap w-full">
+                    <input type="hidden" class="stop-type" value="">
 
                     <div class="stop-data miles w-1/2 md:w-1/3 px-3 mb-6 flex flex-wrap" style="display: none">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Estimated Miles
                         </label>
                         <div class="relative group">
-                            <input name="stops[{{$i}}][miles]" class="appearance-none inline w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->miles ?? '0'}}" disabled>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                            <input name="stops[{{$i}}][miles]" class="stop-data-input appearance-none inline w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->miles ?? '0'}}" disabled>
+                            <div class="stop-data-rate absolute inset-y-0 right-0 flex items-center px-2 text-xs">
                                 $0.00
                             </div>
+                            <input type="hidden" class="stop-data-type" value="miles" />
                         </div>
                     </div>
 
@@ -135,10 +137,11 @@
                             Drop & Hooks
                         </label>
                         <div class="relative">
-                            <input name="stops[{{$i}}][drop_hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->drop_hooks ?? '0'}}" disabled>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                            <input name="stops[{{$i}}][drop_hooks]" class="stop-data-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->drop_hooks ?? '0'}}" disabled>
+                            <div class="stop-data-rate absolute inset-y-0 right-0 flex items-center px-2 text-xs">
                                 $0.00
                             </div>
+                            <input type="hidden" class="stop-data-type" value="drops" />
                         </div>
                     </div>
 
@@ -147,10 +150,11 @@
                             Tray Count
                         </label>
                         <div class="relative">
-                            <input name="stops[{{$i}}][tray_count]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->tray_count ?? '0'}}" disabled>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                            <input name="stops[{{$i}}][tray_count]" class="stop-data-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->tray_count ?? '0'}}" disabled>
+                            <div class="stop-data-rate absolute inset-y-0 right-0 flex items-center px-2 text-xs">
                                 $0.00
                             </div>
+                            <input type="hidden" class="stop-data-type" value="tray" />
                         </div>
                     </div>
 
@@ -159,10 +163,11 @@
                             Roll-Off Count
                         </label>
                         <div class="relative">
-                            <input name="stops[{{$i}}][roll_offs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->roll_offs ?? '0'}}" disabled>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                            <input name="stops[{{$i}}][roll_offs]" class="stop-data-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->roll_offs ?? '0'}}" disabled>
+                            <div class="stop-data-rate absolute inset-y-0 right-0 flex items-center px-2 text-xs">
                                 $0.00
                             </div>
+                            <input type="hidden" class="stop-data-type" value="rolloff" />
                         </div>
                     </div>
 
@@ -171,10 +176,11 @@
                             Pack-Out Count
                         </label>
                         <div class="relative">
-                            <input name="stops[{{$i}}][pack_outs]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->pack_outs ?? '0'}}" disabled>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                            <input name="stops[{{$i}}][pack_outs]" class="stop-data-input appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 pr-16 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="" value="{{$dispatch->stops[$i]->pivot->pack_outs ?? '0'}}" disabled>
+                            <div class="stop-data-rate absolute inset-y-0 right-0 flex items-center px-2 text-xs">
                                 $0.00
                             </div>
+                            <input type="hidden" class="stop-data-type" value="packout" />
                         </div>
                     </div>
 
@@ -184,66 +190,9 @@
                             <span class="ml-2 text-sm text-gray-600 mb-px">Roll-off & Pack-out count are different.</span>
                         </label>
                     </div>
-
-                    {{-- ////// --}}
-
-                    {{-- <div class="stop-data-1 w-full" style="display: none">
-                        <div class="flex flex-wrap">
-                            <div class="miles-div w-1/2 md:w-1/3 px-3 mb-6">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Estimated Miles
-                                </label>
-                                <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
                 </div>
-                <div class="drop-div w-1/2 md:w-1/3 px-3 mb-6">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                        Drop & Hooks
-                    </label>
-                    <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
-                </div>
-
             </div>
-</div>
-
-<div class="stop-data-2 w-full" style="display: none">
-    <div class="flex flex-wrap">
-        <div class="miles-div w-1/2 md:w-1/3 px-3 mb-6">
-            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                Estimated Miles
-            </label>
-            <input name="stops[{{$i}}][miles]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
-        </div>
-        <div class="drop-div w-1/2 md:w-1/3 px-3 mb-6">
-            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                Drop & Hooks
-            </label>
-            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
-        </div>
-        <div class="tray-count-div w-1/2 md:w-1/3 px-3 mb-6">
-            <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                Tray Count
-            </label>
-            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
-        </div>
-        <div class="pack-out-div w-1/2 md:w-1/3 px-3 mb-6" style="display: none">
-            <label class="tray-count-label block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                Pack-Out Count
-            </label>
-            <input name="stops[{{$i}}][drop-hooks]" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="tel" placeholder="9380633" value="{{$dispatch->reference_number}}" disabled>
-        </div>
-        <label class="different-div inline-flex justify-center items-center w-full md:w-1/2 px-3 mb-6 pt-6" for="remember">
-            <input type="checkbox" class="different form-checkbox shadow text-blue-500" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-            <span class="ml-2 text-xs text-gray-600 mb-px">Roll-off & Pack-out count are different.</span>
-        </label>
-    </div>
-</div>
-
-
-<div class="stop-type stop-type-3 w-full px-3 mb-6" style="display: none">You have selected <strong>blue option</strong> so i am here</div> --}}
-</div>
-
-</div>
-@endfor
-</form>
+            @endfor
+    </form>
 </div>
 @endsection
